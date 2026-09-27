@@ -1,0 +1,1759 @@
+<!DOCTYPE html>
+<html lang="tr" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Monarch Gaming — CS 1.6 JailBreak Community</title>
+  <meta name="description" content="Monarch Gaming — Türkiye'nin önde gelen CS 1.6 JailBreak topluluğu." />
+  <link rel="icon" href="images/monarch-logo.png" type="image/png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/pages.css" />
+  <link rel="stylesheet" href="css/forum.css" />
+  <link rel="stylesheet" href="css/dashboard.css" />
+</head>
+<body>
+
+<!-- FADE-IN OVERLAY -->
+<div id="loading-screen"></div>
+
+<div class="bg-mesh"></div>
+<div id="toast-container"></div>
+
+<!-- CONFIRM MODAL -->
+<div class="confirm-modal-backdrop" id="confirm-modal">
+  <div class="confirm-modal">
+    <div class="confirm-icon"><i class="fa-solid fa-triangle-exclamation" style="color:var(--warning)"></i></div>
+    <div class="confirm-title" id="confirm-title">Çıkış Yap</div>
+    <div class="confirm-desc"  id="confirm-desc">Çıkış yapmak istediğinizden emin misiniz?</div>
+    <div class="confirm-btns">
+      <button class="btn btn-ghost"   onclick="closeConfirm()">Vazgeç</button>
+      <button class="btn btn-danger"  id="confirm-ok-btn">Çıkış Yap</button>
+    </div>
+  </div>
+</div>
+
+<!-- NOTIFICATION PANEL -->
+<div class="notif-panel" id="notif-panel">
+  <div class="notif-panel-header">
+    <span>Bildirimler</span>
+    <button class="btn btn-sm btn-ghost" onclick="document.getElementById('notif-panel').classList.remove('open')" style="padding:4px 8px"><i class="fa-solid fa-times"></i></button>
+  </div>
+  <div class="notif-item">
+    <div class="notif-icon"><i class="fa-solid fa-star"></i></div>
+    <div><div class="notif-text"><strong>Hoş geldin!</strong><br>Monarch Gaming'e katıldığın için teşekkürler.</div><div class="notif-time">Az önce</div></div>
+  </div>
+  <div class="notif-item">
+    <div class="notif-icon" style="background:rgba(16,185,129,.15);color:var(--success)"><i class="fa-solid fa-bullhorn"></i></div>
+    <div><div class="notif-text"><strong>Duyuru</strong><br>Sunucu güncellemesi yakında yapılacak.</div><div class="notif-time">1 saat önce</div></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     NAVBAR
+══════════════════════════════════════════ -->
+<nav class="navbar" id="navbar">
+  <span class="nav-logo" onclick="showPage('home')" style="display:flex;align-items:center;gap:8px"><img src="images/monarch-logo.png" style="height:32px;object-fit:contain" alt="" />Monarch Gaming</span>
+
+  <div class="nav-links" id="nav-links">
+    <span class="nav-link active" id="nav-home"        onclick="showPage('home')">Ana Sayfa</span>
+    <span class="nav-link"       id="nav-about"        onclick="showPage('about')">Hakkımızda</span>
+    <span class="nav-link"       id="nav-rules"        onclick="showPage('rules')">Kurallar</span>
+    <span class="nav-link"       id="nav-announcements"onclick="showPage('announcements')">Duyurular</span>
+    <span class="nav-link"       id="nav-staff"        onclick="showPage('staff')">Kadro</span>
+    <span class="nav-link"       id="nav-market"       onclick="showPage('market')">Market</span>
+    <span class="nav-link"       id="nav-gallery"      onclick="showPage('gallery')">Galeri</span>
+    <span class="nav-link"       id="nav-contact"      onclick="showPage('contact')">İletişim</span>
+    <span class="nav-link-forum" id="nav-forum"        onclick="showPage('forum')">Forum Alanı</span>
+  </div>
+
+  <div class="nav-right">
+    <button class="notif-btn" id="notif-btn" onclick="toggleNotif()" title="Bildirimler">
+      <i class="fa-solid fa-bell"></i>
+      <span class="notif-badge" id="notif-badge"></span>
+    </button>
+
+    <button class="account-btn" id="account-btn" onclick="toggleAccountMenu()">
+      <div class="account-avatar" id="account-avatar"><i class="fa-solid fa-user"></i></div>
+      <span id="account-label">Hesap</span>
+      <i class="fa-solid fa-chevron-down" style="font-size:.6rem;color:var(--text-muted)"></i>
+      <div class="account-dropdown" id="account-dropdown">
+        <div id="guest-menu">
+          <div class="acc-menu-item" onclick="showPage('login')"><i class="fa-solid fa-right-to-bracket"></i> Giriş Yap</div>
+          <div class="acc-menu-item" onclick="showPage('register')"><i class="fa-solid fa-user-plus"></i> Kayıt Ol</div>
+        </div>
+        <div id="user-menu" style="display:none">
+          <div class="acc-menu-item" onclick="showDashboard('dashboard')"><i class="fa-solid fa-gauge"></i> Dashboard</div>
+          <div class="acc-menu-item" onclick="showDashboard('account')"><i class="fa-solid fa-user-gear"></i> Hesabım</div>
+          <div class="acc-divider"></div>
+          <div class="acc-menu-item logout" onclick="askLogout()"><i class="fa-solid fa-right-from-bracket"></i> Çıkış Yap</div>
+        </div>
+      </div>
+    </button>
+    <button class="hamburger" id="hamburger" onclick="toggleMobileNav()">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- MOBILE NAV -->
+<nav class="mobile-nav" id="mobile-nav">
+  <div class="mobile-nav-link active" onclick="showPage('home');closeMobileNav()"><i class="fa-solid fa-house"></i> Ana Sayfa</div>
+  <div class="mobile-nav-link" onclick="showPage('about');closeMobileNav()"><i class="fa-solid fa-info-circle"></i> Hakkımızda</div>
+  <div class="mobile-nav-link" onclick="showPage('rules');closeMobileNav()"><i class="fa-solid fa-book"></i> Kurallar</div>
+  <div class="mobile-nav-link" onclick="showPage('announcements');closeMobileNav()"><i class="fa-solid fa-bullhorn"></i> Duyurular</div>
+  <div class="mobile-nav-link" onclick="showPage('staff');closeMobileNav()"><i class="fa-solid fa-shield-halved"></i> Kadro</div>
+  <div class="mobile-nav-link" onclick="showPage('market');closeMobileNav()"><i class="fa-solid fa-store"></i> Market</div>
+  <div class="mobile-nav-link" onclick="showPage('gallery');closeMobileNav()"><i class="fa-solid fa-images"></i> Galeri</div>
+  <div class="mobile-nav-link" onclick="showPage('contact');closeMobileNav()"><i class="fa-solid fa-envelope"></i> İletişim</div>
+  <div style="height:1px;background:var(--border);margin:6px 12px"></div>
+  <div class="mobile-nav-link" onclick="showPage('forum');closeMobileNav()"><i class="fa-solid fa-comments"></i> Forum Alanı</div>
+  <div style="height:1px;background:var(--border);margin:6px 12px"></div>
+  <div class="mobile-nav-link" onclick="showPage('login');closeMobileNav()"><i class="fa-solid fa-right-to-bracket"></i> Giriş Yap</div>
+  <div class="mobile-nav-link" onclick="showPage('register');closeMobileNav()"><i class="fa-solid fa-user-plus"></i> Kayıt Ol</div>
+</nav>
+
+<!-- ══════════════════════════════════════════
+     MAIN CONTENT
+══════════════════════════════════════════ -->
+<main class="main-content">
+
+<!-- ═══════ HOME ═══════ -->
+<div class="page active" id="page-home">
+  <!-- Hero -->
+  <section class="hero section">
+    <div class="hero-bg">
+      <div class="hero-orb hero-orb-1"></div>
+      <div class="hero-orb hero-orb-2"></div>
+      <div class="hero-grid-lines"></div>
+    </div>
+    <div class="container">
+      <div class="hero-split page-transition-enter">
+        <!-- Left: Community content -->
+        <div class="hero-left">
+          <div class="hero-badge"><span class="hero-badge-dot"></span> CS 1.6 JAILBREAK TOPLULUĞU</div>
+          <h1 class="hero-title">
+            Monarch<br>
+            <span class="gradient-text">Gaming</span>
+          </h1>
+          <p class="hero-desc">
+            Türkiye'nin en köklü CS 1.6 JailBreak topluluğuna hoş geldin. Eğlenceli sunucular, güçlü topluluk ve rekabetçi atmosfer burada seni bekliyor.
+          </p>
+          <div class="hero-actions">
+            <button class="btn btn-primary btn-lg" onclick="showPage('register')"><i class="fa-solid fa-rocket"></i> Topluluğa Katıl</button>
+            <button class="btn btn-outline btn-lg" onclick="showPage('about')"><i class="fa-solid fa-info-circle"></i> Hakkımızda</button>
+          </div>
+          <div class="hero-stats">
+            <div><div class="hero-stat-num" id="hs-members">—</div><div class="hero-stat-label">Toplam Üye</div></div>
+            <div><div class="hero-stat-num" id="hs-topics">—</div><div class="hero-stat-label">Toplam Konu</div></div>
+            <div><div class="hero-stat-num" id="hs-posts">—</div><div class="hero-stat-label">Toplam Yorum</div></div>
+            <div><div class="hero-stat-num" id="hs-moderators">—</div><div class="hero-stat-label">Moderatör</div></div>
+          </div>
+        </div>
+        <!-- Right: Live server status -->
+        <div class="hero-right">
+          <div class="server-status-card" id="hero-server-card">
+            <div class="ssc-header">
+              <div class="ssc-title-row">
+                <div class="ssc-badge-dot" id="ssc-dot"></div>
+                <span class="ssc-title">Canlı Sunucu Durumu</span>
+              </div>
+              <span class="ssc-refresh" onclick="fetchServerStatus()" title="Yenile"><i class="fa-solid fa-rotate"></i></span>
+            </div>
+            <div class="ssc-name"><i class="fa-solid fa-shield-halved"></i> Monarch JailBreak</div>
+            <div class="ssc-ip"><i class="fa-solid fa-server"></i> <span id="ssc-ip-text">95.173.173.140</span></div>
+            <div class="ssc-status-row">
+              <div class="ssc-stat">
+                <div class="ssc-stat-label">Durum</div>
+                <div class="ssc-stat-val" id="ssc-status"><i class="fa-solid fa-spinner fa-spin"></i></div>
+              </div>
+              <div class="ssc-stat">
+                <div class="ssc-stat-label">Oyuncular</div>
+                <div class="ssc-stat-val" id="ssc-players">—</div>
+              </div>
+              <div class="ssc-stat">
+                <div class="ssc-stat-label">Harita</div>
+                <div class="ssc-stat-val" id="ssc-map">—</div>
+              </div>
+              <div class="ssc-stat">
+                <div class="ssc-stat-label">Ping</div>
+                <div class="ssc-stat-val" id="ssc-ping">—</div>
+              </div>
+            </div>
+            <div class="ssc-player-list" id="ssc-player-list"></div>
+            <a class="btn btn-primary ssc-connect-btn" href="steam://connect/95.173.173.140" onclick="this.href='steam://connect/95.173.173.140'">
+              <i class="fa-solid fa-plug"></i> Sunucuya Bağlan
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Community Stats -->
+  <section class="community-stats">
+    <div class="container">
+      <div class="cs-header">
+        <h2 class="section-title">Topluluk <span class="gradient-text">İstatistikleri</span></h2>
+        <p class="section-subtitle">Gerçek zamanlı topluluk verileri</p>
+      </div>
+      <div class="stats-grid-6">
+        <div class="stat-card">
+          <div class="stat-card-icon-wrap"><i class="fa-solid fa-users"></i></div>
+          <span class="stat-value" id="stat-members">—</span>
+          <div class="stat-label">Toplam Üye</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-icon-wrap" style="background:rgba(255,255,255,.06);color:var(--text-secondary)"><i class="fa-solid fa-crown"></i></div>
+          <span class="stat-value" id="stat-founders">—</span>
+          <div class="stat-label">Toplam Kurucu</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-icon-wrap" style="background:rgba(255,255,255,.07);color:var(--text-secondary)"><i class="fa-solid fa-shield-halved"></i></div>
+          <span class="stat-value" id="stat-moderators">—</span>
+          <div class="stat-label">Toplam Moderatör</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-icon-wrap" style="background:rgba(255,255,255,.07);color:var(--text-secondary)"><i class="fa-solid fa-comments"></i></div>
+          <span class="stat-value" id="stat-topics">—</span>
+          <div class="stat-label">Toplam Konu</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-icon-wrap" style="background:rgba(255,255,255,.07);color:var(--text-secondary)"><i class="fa-solid fa-pen-to-square"></i></div>
+          <span class="stat-value" id="stat-posts">—</span>
+          <div class="stat-label">Toplam Yorum</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-icon-wrap" style="background:rgba(255,255,255,.07);color:var(--text-secondary)"><i class="fa-solid fa-trophy"></i></div>
+          <span class="stat-value">2025</span>
+          <div class="stat-label">Kuruluş Tarihi</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Server Info -->
+  <section class="server-info section">
+    <div class="container">
+      <div class="server-card">
+        <div>
+          <div class="server-badge"><span class="badge badge-accent"><i class="fa-solid fa-gamepad"></i> JailBreak</span></div>
+          <h2 class="server-title">Monarch <span class="gradient-text">JailBreak</span></h2>
+          <p class="server-desc">Counter-Strike 1.6 JailBreak, gardiyanların mahkumları yönettiği, eğlenceli mini oyunlar ve kurallarla dolu benzersiz bir oyun modudur. Monarch Gaming bu deneyimi en iyi şekilde sunmak için burada.</p>
+          <div class="hero-actions" style="margin-top:0">
+            <button class="btn btn-primary" onclick="showPage('rules')"><i class="fa-solid fa-book"></i> Kuralları Oku</button>
+            <button class="btn btn-ghost" onclick="showPage('contact')"><i class="fa-solid fa-headset"></i> İletişim</button>
+          </div>
+        </div>
+        <div>
+          <div class="server-details">
+            <div class="server-detail-item">
+              <i class="fa-solid fa-gamepad"></i>
+              <div><div class="server-detail-label">Oyun</div><div class="server-detail-val">Counter-Strike 1.6</div></div>
+            </div>
+            <div class="server-detail-item">
+              <i class="fa-solid fa-shield-halved"></i>
+              <div><div class="server-detail-label">Mod</div><div class="server-detail-val">JailBreak</div></div>
+            </div>
+            <div class="server-detail-item">
+              <i class="fa-brands fa-teamspeak"></i>
+              <div><div class="server-detail-label">TeamSpeak 3</div><div class="server-detail-val">Monarch</div></div>
+            </div>
+            <div class="server-detail-item">
+              <i class="fa-solid fa-users"></i>
+              <div><div class="server-detail-label">Topluluk</div><div class="server-detail-val">Aktif & Büyüyen</div></div>
+            </div>
+            <div class="server-detail-item">
+              <i class="fa-solid fa-clock"></i>
+              <div><div class="server-detail-label">Destek</div><div class="server-detail-val">7/24</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Reviews -->
+  <section class="reviews-section">
+    <div class="container">
+      <h2 class="section-title">Üye <span class="gradient-text">Görüşleri</span></h2>
+      <p class="section-subtitle">Topluluğumuzdan gerçek görüşler</p>
+      <div class="reviews-grid">
+        <div class="review-card">
+          <div class="review-header">
+            <div class="reviewer-avatar">MK</div>
+            <div><div class="reviewer-name">MertKaya99</div><div class="reviewer-game">JailBreak Oyuncusu</div></div>
+          </div>
+          <div class="review-stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
+          <p class="review-text">"Monarch Gaming gerçekten kaliteli bir topluluk. Admin ekibi çok profesyonel ve sunucu her zaman stabil çalışıyor."</p>
+        </div>
+        <div class="review-card">
+          <div class="review-header">
+            <div class="reviewer-avatar" style="background:linear-gradient(135deg,#15803d,#166534)">xS</div>
+            <div><div class="reviewer-name">xSniper_TR</div><div class="reviewer-game">Veteran Üye</div></div>
+          </div>
+          <div class="review-stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i></div>
+          <p class="review-text">"CS 1.6 JailBreak deneyimi için en doğru adres. Topluluk çok aktif, her gece eğlenceli maçlar oynanıyor."</p>
+        </div>
+        <div class="review-card">
+          <div class="review-header">
+            <div class="reviewer-avatar" style="background:linear-gradient(135deg,#3a3010,#6b5a18)">ZD</div>
+            <div><div class="reviewer-name">ZeynepD</div><div class="reviewer-game">Aktif Üye</div></div>
+          </div>
+          <div class="review-stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
+          <p class="review-text">"Sitenin tasarımı çok modern ve kullanımı kolay. Kurallar açık, yöneticiler adil. Kesinlikle tavsiye ederim!"</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="faq-section">
+    <div class="container">
+      <h2 class="section-title" style="text-align:center;margin-bottom:8px">Sık Sorulan <span class="gradient-text">Sorular</span></h2>
+      <p class="section-subtitle" style="text-align:center;margin-bottom:40px">Aklındaki soruların cevapları</p>
+      <div class="faq-list">
+        <div class="faq-item">
+<div class="faq-question" onclick="toggleFaq(this)">Monarch Gaming nedir? <i class="fa-solid fa-chevron-down faq-chevron"></i></div>
+              <div class="faq-answer">Monarch Gaming, CS 1.6 JailBreak moduna odaklanan bir oyun topluluğudur. Aktif sunucular, güçlü admin kadrosu ve kaliteli oyun deneyimi sunar.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">JailBreak modunu nasıl oynayabilirim? <i class="fa-solid fa-chevron-down faq-chevron"></i></div>
+          <div class="faq-answer">CS 1.6'nın yüklü olması yeterli. Sunucumuzun IP adresini alarak doğrudan bağlanabilirsiniz. İletişim sayfasından bize ulaşın.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">TeamSpeak 3 zorunlu mu? <i class="fa-solid fa-chevron-down faq-chevron"></i></div>
+          <div class="faq-answer">Zorunlu değil ancak toplulukla daha iyi iletişim kurmak için önerilir. TS3 sunucumuz "Monarch" adıyla erişilebilir durumdadır.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">Admin olmak mümkün mü? <i class="fa-solid fa-chevron-down faq-chevron"></i></div>
+          <div class="faq-answer">Evet, belli bir süre aktif olarak topluluğa katkıda bulunan üyeler admin başvurusunda bulunabilir. Kurallar sayfasını ve yetkili kurallarını incelemenizi öneririz.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">Premium üyelik ne sağlar? <i class="fa-solid fa-chevron-down faq-chavron"></i></div>
+          <div class="faq-answer">Premium üyelik özel rozetler, ekstra forum yetkileri ve topluluk içi ayrıcalıklar sağlar. Sadece adminler tarafından aktif edilir.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div><!-- /page-home -->
+
+<!-- ═══════ ABOUT ═══════ -->
+<div class="page" id="page-about">
+  <div class="about-page">
+    <div class="container">
+
+      <!-- Hero -->
+      <div class="about-hero page-transition-enter">
+        <div class="page-hero-badge"><i class="fa-solid fa-shield-halved"></i> Hakkımızda</div>
+        <h1 class="about-hero-title">Monarch <span class="gradient-text">Gaming</span></h1>
+        <p class="about-hero-desc">CS 1.6 JailBreak odaklı güçlü bir oyun topluluğu. Eğlenceli oyun ortamı, adil yönetim ve aktif topluluk anlayışıyla kurulmuş bir platformuz.</p>
+      </div>
+
+      <!-- Server Card -->
+      <h2 class="section-title" style="margin-bottom:28px">Monarch <span class="gradient-text">JailBreak</span></h2>
+      <div class="server-card" style="margin-bottom:72px">
+        <div>
+          <div class="page-hero-badge" style="margin-bottom:18px"><i class="fa-solid fa-gamepad"></i> CS 1.6 JailBreak</div>
+          <p class="server-desc">Monarch JailBreak, topluluğumuzun ana sunucusudur. CS 1.6 üzerinde çalışan bu sunucuda gardiyanlar ve mahkumlar arasında geçen, mini oyunlarla dolu eğlenceli maçlar oynanmaktadır.</p>
+          <div class="cheat-features">
+            <div class="feature-row"><i class="fa-solid fa-circle-check"></i> Aktif ve deneyimli admin kadrosu</div>
+            <div class="feature-row"><i class="fa-solid fa-circle-check"></i> Adil ve şeffaf kural sistemi</div>
+            <div class="feature-row"><i class="fa-solid fa-circle-check"></i> Düzenli etkinlikler ve turnuvalar</div>
+            <div class="feature-row"><i class="fa-solid fa-circle-check"></i> Aktif topluluk &amp; TS3 kanalı</div>
+          </div>
+        </div>
+        <div>
+          <div class="server-details">
+            <div class="server-detail-item"><i class="fa-solid fa-gamepad"></i><div><div class="server-detail-label">Oyun Modu</div><div class="server-detail-val">CS 1.6 JailBreak</div></div></div>
+            <div class="server-detail-item"><i class="fa-brands fa-teamspeak"></i><div><div class="server-detail-label">TeamSpeak 3</div><div class="server-detail-val">Monarch</div></div></div>
+            <div class="server-detail-item"><i class="fa-brands fa-whatsapp"></i><div><div class="server-detail-label">WhatsApp</div><div class="server-detail-val">0535 963 21 65</div></div></div>
+            <div class="server-detail-item"><i class="fa-solid fa-clock"></i><div><div class="server-detail-label">Destek</div><div class="server-detail-val">7/24 Aktif</div></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Values -->
+      <div style="text-align:center;margin-bottom:40px">
+        <div class="page-hero-badge" style="margin-bottom:14px"><i class="fa-solid fa-star"></i> Değerlerimiz</div>
+        <h2 class="section-title">Topluluğumuzun <span class="gradient-text">Temelleri</span></h2>
+        <p class="section-subtitle">Monarch Gaming'i özel kılan temel değerler</p>
+      </div>
+      <div class="values-grid" style="margin-bottom:80px">
+        <div class="value-card">
+          <div class="value-icon-wrap"><i class="fa-solid fa-scale-balanced"></i></div>
+          <div class="value-title">Adalet</div>
+          <p class="value-desc">Herkese eşit ve adil davranılır. Kural ihlalleri ayrım gözetilmeksizin yaptırıma uğrar.</p>
+        </div>
+        <div class="value-card">
+          <div class="value-icon-wrap"><i class="fa-solid fa-users"></i></div>
+          <div class="value-title">Topluluk</div>
+          <p class="value-desc">Birlikte güçlüyüz. Sağlıklı bir topluluk ortamı oluşturmak önceliğimizdir.</p>
+        </div>
+        <div class="value-card">
+          <div class="value-icon-wrap"><i class="fa-solid fa-gamepad"></i></div>
+          <div class="value-title">Eğlence</div>
+          <p class="value-desc">Oyun eğlenceli olmalı. Olumlu bir oyun ortamı sağlamak için çalışıyoruz.</p>
+        </div>
+        <div class="value-card">
+          <div class="value-icon-wrap"><i class="fa-solid fa-shield-halved"></i></div>
+          <div class="value-title">Güvenlik</div>
+          <p class="value-desc">Hile, troll ve kötü niyetli davranışlara sıfır tolerans politikası uygularız.</p>
+        </div>
+        <div class="value-card">
+          <div class="value-icon-wrap"><i class="fa-solid fa-chart-line"></i></div>
+          <div class="value-title">Gelişim</div>
+          <p class="value-desc">Sürekli gelişim ve iyileştirme. Üyelerimizin geri bildirimlerine önem veririz.</p>
+        </div>
+        <div class="value-card">
+          <div class="value-icon-wrap" style="background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.12);color:var(--accent)"><i class="fa-solid fa-comment-dots"></i></div>
+          <div class="value-title">Şeffaflık</div>
+          <p class="value-desc">Kararlarımızı açıkça paylaşır, toplulukla şeffaf iletişim kurarız.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ RULES ═══════ -->
+<div class="page" id="page-rules">
+  <div class="rules-page">
+    <div class="container">
+      <div class="rules-hero page-transition-enter">
+        <span class="badge badge-accent" style="margin-bottom:14px;display:inline-flex"><i class="fa-solid fa-book"></i>&nbsp;Kurallar</span>
+        <h1 class="section-title">Topluluk <span class="gradient-text">Kuralları</span></h1>
+        <p class="about-hero-desc">Monarch Gaming'de sağlıklı bir ortam için aşağıdaki kurallara uymanız zorunludur. Kurallar tüm üyeler için geçerlidir.</p>
+      </div>
+
+      <!-- Accordion Rule Sections -->
+      <div class="rules-accordion">
+
+        <!-- Oyun Kuralları -->
+        <div class="rule-section" id="rs-game">
+          <div class="rule-section-header" onclick="toggleRuleSection('rs-game')">
+            <div class="rule-section-left">
+              <div class="rule-section-icon"><i class="fa-solid fa-gamepad"></i></div>
+              <div>
+                <div class="rule-section-title">Oyun Kuralları</div>
+                <div class="rule-section-sub">CS 1.6 JailBreak Sunucusu — 8 kural</div>
+              </div>
+            </div>
+            <div class="rule-section-meta">
+              <span class="rule-count-badge">8</span>
+              <i class="fa-solid fa-chevron-down rule-section-chevron"></i>
+            </div>
+          </div>
+          <div class="rule-section-body">
+            <div class="rule-table">
+              <div class="rule-row"><div class="rule-num">1</div><div class="rule-text">Hile, exploit veya bug kullanmak kesinlikle yasaktır. İlk tespitten kalıcı ban uygulanır.</div><div class="rule-severity high">Kalıcı Ban</div></div>
+              <div class="rule-row"><div class="rule-num">2</div><div class="rule-text">Gardiyanlar mahkumlara açık ve anlaşılır emirler vermek zorundadır. Sessiz gardiyan oynayılamaz.</div><div class="rule-severity med">Uyarı</div></div>
+              <div class="rule-row"><div class="rule-num">3</div><div class="rule-text">Küfür, hakaret ve ırkçı söylemler kesinlikle yasaktır.</div><div class="rule-severity high">Susturma</div></div>
+              <div class="rule-row"><div class="rule-num">4</div><div class="rule-text">Mahkumlar gardiyanların meşru emirlerine uymak zorundadır.</div><div class="rule-severity low">Uyarı</div></div>
+              <div class="rule-row"><div class="rule-num">5</div><div class="rule-text">Teamkill (takım öldürme) kasıtlı olarak yapılamaz.</div><div class="rule-severity med">Kick/Ban</div></div>
+              <div class="rule-row"><div class="rule-num">6</div><div class="rule-text">Mic spam, ses kirliliği ve rahatsız edici ses çıkarımı yasaktır.</div><div class="rule-severity low">Uyarı</div></div>
+              <div class="rule-row"><div class="rule-num">7</div><div class="rule-text">Admin kararlarına saygı gösterilmeli, itirazlar uygun kanaldan yapılmalıdır.</div><div class="rule-severity med">Susturma</div></div>
+              <div class="rule-row"><div class="rule-num">8</div><div class="rule-text">Reklam ve tanıtım yapmak yasaktır.</div><div class="rule-severity high">Kalıcı Ban</div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TS3 Kuralları -->
+        <div class="rule-section" id="rs-ts3">
+          <div class="rule-section-header" onclick="toggleRuleSection('rs-ts3')">
+            <div class="rule-section-left">
+              <div class="rule-section-icon" style="background:rgba(56,189,248,.12);color:var(--info)"><i class="fa-brands fa-teamspeak"></i></div>
+              <div>
+                <div class="rule-section-title">TeamSpeak 3 Kuralları</div>
+                <div class="rule-section-sub">Monarch TS3 Sunucusu — 7 kural</div>
+              </div>
+            </div>
+            <div class="rule-section-meta">
+              <span class="rule-count-badge" style="background:rgba(56,189,248,.12);color:var(--info)">7</span>
+              <i class="fa-solid fa-chevron-down rule-section-chevron"></i>
+            </div>
+          </div>
+          <div class="rule-section-body">
+            <div class="rule-table">
+              <div class="rule-row"><div class="rule-num">1</div><div class="rule-text">Diğer kullanıcılara saygılı olmak zorunludur. Hakaret ve aşağılama kesinlikle yasaktır.</div><div class="rule-severity high">Susturma</div></div>
+              <div class="rule-row"><div class="rule-num">2</div><div class="rule-text">İzinsiz kanal oluşturmak ve kanal adlarını değiştirmek yasaktır.</div><div class="rule-severity med">Uyarı</div></div>
+              <div class="rule-row"><div class="rule-num">3</div><div class="rule-text">Ses bozucu, müzik botu veya rahatsız edici sesler yaymak yasaktır.</div><div class="rule-severity med">Kick</div></div>
+              <div class="rule-row"><div class="rule-num">4</div><div class="rule-text">Diğer kullanıcıların kanalına izinsiz taşıma yapılamaz.</div><div class="rule-severity low">Uyarı</div></div>
+              <div class="rule-row"><div class="rule-num">5</div><div class="rule-text">Yetkililere saygı gösterilmeli ve talimatlara uyulmalıdır.</div><div class="rule-severity med">Susturma</div></div>
+              <div class="rule-row"><div class="rule-num">6</div><div class="rule-text">Spam ve tekrarlayan mesajlar atmak yasaktır.</div><div class="rule-severity low">Uyarı</div></div>
+              <div class="rule-row"><div class="rule-num">7</div><div class="rule-text">Reklam içerikli mesaj veya nickname kullanmak yasaktır.</div><div class="rule-severity high">Kalıcı Ban</div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Yetkili Kuralları -->
+        <div class="rule-section" id="rs-admin">
+          <div class="rule-section-header" onclick="toggleRuleSection('rs-admin')">
+            <div class="rule-section-left">
+              <div class="rule-section-icon" style="background:rgba(245,158,11,.12);color:var(--warning)"><i class="fa-solid fa-shield-halved"></i></div>
+              <div>
+                <div class="rule-section-title">Yetkili Kuralları</div>
+                <div class="rule-section-sub">Admin & Yönetim Ekibi — 7 kural</div>
+              </div>
+            </div>
+            <div class="rule-section-meta">
+              <span class="rule-count-badge" style="background:rgba(245,158,11,.12);color:var(--warning)">7</span>
+              <i class="fa-solid fa-chevron-down rule-section-chevron"></i>
+            </div>
+          </div>
+          <div class="rule-section-body">
+            <div class="rule-table">
+              <div class="rule-row"><div class="rule-num">1</div><div class="rule-text">Yetkililer her zaman tarafsız ve adil olmak zorundadır. Arkadaş-düşman ayrımı yapılamaz.</div><div class="rule-severity high">Yetki İptali</div></div>
+              <div class="rule-row"><div class="rule-num">2</div><div class="rule-text">Yetkili gücü kötüye kullanmak (abuze) anında yetki iptaline neden olur.</div><div class="rule-severity high">Yetki İptali</div></div>
+              <div class="rule-row"><div class="rule-num">3</div><div class="rule-text">Cezalar orantılı olmalıdır. Gereksiz ve aşırı cezalar uygulanamaz.</div><div class="rule-severity med">Uyarı</div></div>
+              <div class="rule-row"><div class="rule-num">4</div><div class="rule-text">Yetkililer aktif olmak zorundadır. Uzun süreli pasiflik yetki kaybına yol açar.</div><div class="rule-severity med">İndirgeme</div></div>
+              <div class="rule-row"><div class="rule-num">5</div><div class="rule-text">Kararlar açıklanabilir ve gerekçelendirilmiş olmalıdır.</div><div class="rule-severity low">Uyarı</div></div>
+              <div class="rule-row"><div class="rule-num">6</div><div class="rule-text">Üst yönetim kararlarına saygı gösterilmeli ve itirazlar uygun şekilde iletilmelidir.</div><div class="rule-severity med">Yetki İptali</div></div>
+              <div class="rule-row"><div class="rule-num">7</div><div class="rule-text">Yetkililerin bölümünü temsil ederken topluluğun itibarını korumak zorunludur.</div><div class="rule-severity med">Uyarı</div></div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /rules-accordion -->
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ STAFF ═══════ -->
+<div class="page" id="page-staff">
+  <div style="padding:0 0 100px">
+    <div class="page-hero-section">
+      <div class="container">
+        <div class="page-transition-enter">
+          <div class="page-hero-badge"><i class="fa-solid fa-shield-halved"></i> Kadromuz</div>
+          <h1 class="page-hero-title">Yönetim <span class="gradient-text">Ekibi</span></h1>
+          <p class="page-hero-sub">Monarch Gaming topluluğunu yöneten deneyimli ekibimizle tanışın</p>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <div id="staff-page-list">
+        <div class="empty-pro">
+          <div class="empty-pro-icon"><i class="fa-solid fa-shield-halved"></i></div>
+          <div class="empty-pro-title">Kadro Yükleniyor...</div>
+          <p class="empty-pro-desc">Ekip üyeleri veritabanından çekiliyor, lütfen bekleyin.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ ANNOUNCEMENTS ═══════ -->
+<div class="page" id="page-announcements">
+  <div style="padding:0 0 100px">
+    <div class="page-hero-section">
+      <div class="container">
+        <div class="page-transition-enter">
+          <div class="page-hero-badge"><i class="fa-solid fa-bullhorn"></i> Duyurular</div>
+          <h1 class="page-hero-title">Topluluk <span class="gradient-text">Duyuruları</span></h1>
+          <p class="page-hero-sub">Topluluk haberleri, güncelleme notları ve önemli duyurular</p>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="ann-dynamic-content" id="ann-dynamic-root">
+        <div style="text-align:center;padding:60px 0;color:var(--text-muted)">
+          <i class="fa-solid fa-circle-notch fa-spin" style="font-size:2rem"></i>
+          <p style="margin-top:12px">Duyurular yükleniyor...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ MARKET ═══════ -->
+<div class="page" id="page-market">
+  <div style="padding:0 0 100px">
+    <div class="page-hero-section">
+      <div class="container">
+        <div class="page-transition-enter">
+          <div class="page-hero-badge"><i class="fa-solid fa-store"></i> Market</div>
+          <h1 class="page-hero-title">Topluluk <span class="gradient-text">Marketi</span></h1>
+          <p class="page-hero-sub">Özel içerikler, rozetler, skin'ler ve daha fazlası çok yakında!</p>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <div id="market-grid-wrap">
+        <div class="empty-pro">
+          <div class="empty-pro-icon"><i class="fa-solid fa-store"></i></div>
+          <div class="empty-pro-title">Henüz Ürün Bulunmuyor</div>
+          <p class="empty-pro-desc">Market bölümüne henüz ürün eklenmedi. İleride özel skin'ler, rozetler ve daha fazlası burada olacak!</p>
+          <button class="btn btn-outline" onclick="showPage('contact')"><i class="fa-solid fa-envelope"></i> Bilgi Al</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ GALLERY ═══════ -->
+<div class="page" id="page-gallery">
+  <div style="padding:0 0 100px">
+    <div class="page-hero-section">
+      <div class="container">
+        <div class="page-transition-enter">
+          <div class="page-hero-badge"><i class="fa-solid fa-images"></i> Galeri</div>
+          <h1 class="page-hero-title">Topluluk <span class="gradient-text">Galerisi</span></h1>
+          <p class="page-hero-sub">Topluluğumuzdan en güzel anlar, ekran görüntüleri ve etkinlik fotoğrafları</p>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="gallery-dynamic-content" id="gallery-dynamic-root">
+        <div style="text-align:center;padding:60px 0;color:var(--text-muted)">
+          <i class="fa-solid fa-circle-notch fa-spin" style="font-size:2rem"></i>
+          <p style="margin-top:12px">Görseller yükleniyor...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ CONTACT ═══════ -->
+<div class="page" id="page-contact">
+  <div class="contact-page">
+    <div class="page-hero-section">
+      <div class="container">
+        <div class="page-transition-enter">
+          <div class="page-hero-badge"><i class="fa-solid fa-headset"></i> İletişim</div>
+          <h1 class="page-hero-title">Bize <span class="gradient-text">Ulaşın</span></h1>
+          <p class="page-hero-sub">Monarch Gaming topluluğuna katılmak veya iletişime geçmek için aşağıdaki kanalları kullanabilirsiniz</p>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+
+      <!-- 2 Main Contact Cards -->
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:20px;max-width:780px;margin:0 auto 60px">
+
+        <!-- TeamSpeak 3 -->
+        <div class="contact-card" style="padding:32px 28px;flex-direction:column;align-items:flex-start;gap:20px;cursor:pointer" onclick="location.href='ts3server://MHJB'">
+          <div style="display:flex;align-items:center;gap:16px">
+            <div class="contact-card-icon" style="width:56px;height:56px;font-size:1.5rem;flex-shrink:0"><i class="fa-brands fa-teamspeak"></i></div>
+            <div>
+              <div class="contact-card-label">TeamSpeak 3 Sunucusu</div>
+              <div class="contact-card-value" style="font-size:1.25rem">MHJB</div>
+              <div class="contact-card-sub">Bağlanmak için tıklayın</div>
+            </div>
+          </div>
+          <div style="width:100%;background:var(--bg-elevated);border:1px solid var(--border);border-radius:10px;padding:12px 16px;display:flex;align-items:center;justify-content:space-between">
+            <code style="font-size:.9rem;letter-spacing:.04em;color:var(--text-primary);font-family:monospace">MHJB</code>
+            <span style="font-size:.72rem;color:var(--text-muted);display:flex;align-items:center;gap:4px"><i class="fa-solid fa-copy"></i> Sunucu Adı</span>
+          </div>
+          <a href="ts3server://MHJB" class="btn btn-primary" style="width:100%;justify-content:center;text-decoration:none" onclick="event.stopPropagation()">
+            <i class="fa-brands fa-teamspeak"></i> TS3'e Bağlan
+          </a>
+        </div>
+
+        <!-- Phone -->
+        <div class="contact-card" style="padding:32px 28px;flex-direction:column;align-items:flex-start;gap:20px">
+          <div style="display:flex;align-items:center;gap:16px">
+            <div class="contact-card-icon" style="width:56px;height:56px;font-size:1.5rem;flex-shrink:0"><i class="fa-solid fa-phone"></i></div>
+            <div>
+              <div class="contact-card-label">Telefon</div>
+              <div class="contact-card-value" style="font-size:1.25rem">0535 963 21 65</div>
+              <div class="contact-card-sub">Arayabilir veya mesaj gönderebilirsiniz</div>
+            </div>
+          </div>
+          <div style="width:100%;background:var(--bg-elevated);border:1px solid var(--border);border-radius:10px;padding:12px 16px;display:flex;align-items:center;justify-content:space-between">
+            <code style="font-size:.9rem;letter-spacing:.04em;color:var(--text-primary);font-family:monospace">0535 963 21 65</code>
+            <span style="font-size:.72rem;color:var(--text-muted);display:flex;align-items:center;gap:4px"><i class="fa-solid fa-mobile-screen"></i> Telefon</span>
+          </div>
+          <a href="tel:+905359632165" class="btn btn-outline" style="width:100%;justify-content:center;text-decoration:none">
+            <i class="fa-solid fa-phone"></i> Hemen Ara
+          </a>
+        </div>
+      </div>
+
+      <!-- Social / Additional Links -->
+      <div style="max-width:780px;margin:0 auto 100px">
+        <p style="text-align:center;font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--text-muted);margin-bottom:20px">Diğer Kanallar</p>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px">
+
+          <a href="https://www.youtube.com/@monarchjb" target="_blank" style="display:flex;flex-direction:column;align-items:center;gap:10px;padding:20px 14px;background:var(--bg-card);border:1px solid var(--border);border-radius:14px;text-decoration:none;color:var(--text-primary);transition:all .25s" onmouseover="this.style.borderColor='rgba(255,255,255,.2)';this.style.transform='translateY(-3px)'" onmouseout="this.style.borderColor='';this.style.transform=''">
+            <i class="fa-brands fa-youtube" style="font-size:1.6rem;color:var(--text-muted)"></i>
+            <div style="text-align:center">
+              <div style="font-weight:700;font-size:.82rem">YouTube</div>
+              <div style="font-size:.72rem;color:var(--text-muted)">@monarchjb</div>
+            </div>
+          </a>
+
+          <a href="https://steamcommunity.com/profiles/76561198712689610/" target="_blank" style="display:flex;flex-direction:column;align-items:center;gap:10px;padding:20px 14px;background:var(--bg-card);border:1px solid var(--border);border-radius:14px;text-decoration:none;color:var(--text-primary);transition:all .25s" onmouseover="this.style.borderColor='rgba(255,255,255,.2)';this.style.transform='translateY(-3px)'" onmouseout="this.style.borderColor='';this.style.transform=''">
+            <i class="fa-brands fa-steam" style="font-size:1.6rem;color:var(--text-muted)"></i>
+            <div style="text-align:center">
+              <div style="font-weight:700;font-size:.82rem">Steam</div>
+              <div style="font-size:.72rem;color:var(--text-muted)">Profil</div>
+            </div>
+          </a>
+
+          <div style="display:flex;flex-direction:column;align-items:center;gap:10px;padding:20px 14px;background:var(--bg-card);border:1px solid var(--border);border-radius:14px;cursor:pointer;transition:all .25s" onclick="navigator.clipboard&&navigator.clipboard.writeText('95.173.173.117').then(()=>this.querySelector('.cs-copy-label').textContent='Kopyalandı!')" onmouseover="this.style.borderColor='rgba(255,255,255,.2)';this.style.transform='translateY(-3px)'" onmouseout="this.style.borderColor='';this.style.transform=''">
+            <i class="fa-solid fa-server" style="font-size:1.6rem;color:var(--text-muted)"></i>
+            <div style="text-align:center">
+              <div style="font-weight:700;font-size:.82rem">CS 1.6 Sunucu</div>
+              <div class="cs-copy-label" style="font-size:.72rem;color:var(--text-muted)">95.173.173.117</div>
+            </div>
+          </div>
+
+          <div style="display:flex;flex-direction:column;align-items:center;gap:10px;padding:20px 14px;background:var(--bg-card);border:1px solid var(--border);border-radius:14px;transition:all .25s" onmouseover="this.style.borderColor='rgba(255,255,255,.2)';this.style.transform='translateY(-3px)'" onmouseout="this.style.borderColor='';this.style.transform=''">
+            <i class="fa-solid fa-headset" style="font-size:1.6rem;color:var(--text-muted)"></i>
+            <div style="text-align:center">
+              <div style="font-weight:700;font-size:.82rem">Destek</div>
+              <div style="font-size:.72rem;color:var(--text-muted);cursor:pointer" onclick="showDashView&&showDashView('support')">Panel &rsaquo; Destek</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ FORUM ═══════ -->
+<div class="page" id="page-forum">
+  <!-- Forum Header -->
+  <div class="forum-page-wrap">
+    <div class="forum-header-bar">
+      <div class="container">
+        <div class="forum-header-inner">
+          <div>
+            <h1 class="forum-page-title">Forum <span class="gradient-text">Alanı</span></h1>
+          </div>
+          <div class="forum-header-actions">
+            <div class="forum-search-wrap">
+              <i class="fa-solid fa-search forum-search-icon"></i>
+              <input type="text" class="forum-search-input" id="forum-search" placeholder="Konu ara..." oninput="forumSearch(this.value)" />
+              <button class="forum-search-clear" onclick="clearForumSearch()" title="Temizle"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <button class="btn btn-primary" id="new-topic-btn" onclick="showNewTopicModal()" style="display:none">
+              <i class="fa-solid fa-plus"></i> Yeni Konu
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container" style="padding-top:24px;padding-bottom:60px">
+
+      <!-- Category Grid -->
+      <div class="forum-cat-grid">
+        <div class="forum-cat-box" onclick="filterByCategory(null,null,document.querySelector('.forum-tab[data-cat=\\'\\']'))">
+          <div class="fcb-icon-wrap" style="background:rgba(255,255,255,.06);color:var(--text-secondary)"><i class="fa-solid fa-list"></i></div>
+          <div class="fcb-info">
+            <div class="fcb-name">Genel</div>
+            <div class="fcb-desc">Genel konular ve sohbet</div>
+          </div>
+          <div class="fcb-stats" id="fcb-stat-genel">
+            <span><i class="fa-solid fa-pen-to-square"></i> <span class="fcb-konu">—</span> Konu</span>
+            <span><i class="fa-solid fa-comment"></i> <span class="fcb-mesaj">—</span> Mesaj</span>
+          </div>
+        </div>
+        <div class="forum-cat-box" onclick="filterByCategoryName('Haber')">
+          <div class="fcb-icon-wrap" style="background:rgba(59,130,246,.15);color:#3b82f6"><i class="fa-solid fa-newspaper"></i></div>
+          <div class="fcb-info">
+            <div class="fcb-name">Haber</div>
+            <div class="fcb-desc">Sunucu ve topluluk haberleri</div>
+          </div>
+          <div class="fcb-stats" id="fcb-stat-haber">
+            <span><i class="fa-solid fa-pen-to-square"></i> <span class="fcb-konu">—</span> Konu</span>
+            <span><i class="fa-solid fa-comment"></i> <span class="fcb-mesaj">—</span> Mesaj</span>
+          </div>
+        </div>
+        <div class="forum-cat-box" onclick="filterByCategoryName('Paylaşım')">
+          <div class="fcb-icon-wrap" style="background:rgba(168,85,247,.15);color:#a855f7"><i class="fa-solid fa-share-nodes"></i></div>
+          <div class="fcb-info">
+            <div class="fcb-name">Paylaşım</div>
+            <div class="fcb-desc">Medya ve içerik paylaşımları</div>
+          </div>
+          <div class="fcb-stats" id="fcb-stat-paylasim">
+            <span><i class="fa-solid fa-pen-to-square"></i> <span class="fcb-konu">—</span> Konu</span>
+            <span><i class="fa-solid fa-comment"></i> <span class="fcb-mesaj">—</span> Mesaj</span>
+          </div>
+        </div>
+        <div class="forum-cat-box" onclick="filterByCategoryName('Ban İtiraz')">
+          <div class="fcb-icon-wrap" style="background:rgba(239,68,68,.15);color:#ef4444"><i class="fa-solid fa-gavel"></i></div>
+          <div class="fcb-info">
+            <div class="fcb-name">Ban İtiraz</div>
+            <div class="fcb-desc">Ban kaldırma talepleri</div>
+          </div>
+          <div class="fcb-stats" id="fcb-stat-banitiraz">
+            <span><i class="fa-solid fa-pen-to-square"></i> <span class="fcb-konu">—</span> Konu</span>
+            <span><i class="fa-solid fa-comment"></i> <span class="fcb-mesaj">—</span> Mesaj</span>
+          </div>
+        </div>
+        <div class="forum-cat-box" onclick="filterByCategoryName('Reklam')">
+          <div class="fcb-icon-wrap" style="background:rgba(245,158,11,.15);color:#f59e0b"><i class="fa-solid fa-bullhorn"></i></div>
+          <div class="fcb-info">
+            <div class="fcb-name">Reklam</div>
+            <div class="fcb-desc">Tanıtım ve reklam alanı</div>
+          </div>
+          <div class="fcb-stats" id="fcb-stat-reklam">
+            <span><i class="fa-solid fa-pen-to-square"></i> <span class="fcb-konu">—</span> Konu</span>
+            <span><i class="fa-solid fa-comment"></i> <span class="fcb-mesaj">—</span> Mesaj</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Category Tabs -->
+      <div class="forum-tabs" id="forum-tabs"></div>
+
+      <!-- Topics Table -->
+      <div id="forum-topics-list">
+        <div class="forum-loading"><i class="fa-solid fa-spinner fa-spin"></i> Yükleniyor...</div>
+      </div>
+
+      <!-- Pagination -->
+      <div class="forum-pagination" id="forum-pagination"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ CREATE TOPIC PAGE ═══════ -->
+<div class="page" id="page-create-topic">
+  <div id="create-topic-wrap"></div>
+</div>
+
+<!-- ═══════ USER PROFILE PAGE ═══════ -->
+<div class="page" id="page-user-profile">
+  <div id="user-profile-wrap"></div>
+</div>
+
+<!-- ═══════ TOPIC DETAIL ═══════ -->
+<div class="page" id="page-topic">
+  <div class="forum-page-wrap">
+    <div class="container" style="padding-top:24px;padding-bottom:80px">
+      <button class="btn btn-ghost btn-sm" onclick="backToForum()" style="margin-bottom:18px">
+        <i class="fa-solid fa-arrow-left"></i> Foruma Dön
+      </button>
+      <div id="topic-detail-wrap">
+        <div class="forum-loading"><i class="fa-solid fa-spinner fa-spin"></i></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- NEW TOPIC MODAL -->
+<div class="modal-backdrop" id="new-topic-modal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3>Yeni Konu Oluştur</h3>
+      <button onclick="closeModal('new-topic-modal')"><i class="fa-solid fa-times"></i></button>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Başlık *</label>
+      <input type="text" class="form-input" id="nt-title" placeholder="Konu başlığı" maxlength="120" />
+    </div>
+    <div class="form-group">
+      <label class="form-label">Kategori *</label>
+      <select class="form-input" id="nt-category" style="padding-left:14px"></select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">İçerik *</label>
+      <div class="rich-toolbar">
+        <button type="button" onclick="rtCmd('bold')" title="Kalın"><i class="fa-solid fa-bold"></i></button>
+        <button type="button" onclick="rtCmd('italic')" title="İtalik"><i class="fa-solid fa-italic"></i></button>
+        <button type="button" onclick="rtInsertLink()" title="Link"><i class="fa-solid fa-link"></i></button>
+        <button type="button" onclick="toggleEmojiPickerRT('nt-content')" title="Emoji"><i class="fa-regular fa-face-smile"></i></button>
+      </div>
+      <div class="rich-editor" id="nt-content" contenteditable="true" data-placeholder="Konu içeriğini yazın..."></div>
+      <div class="emoji-picker" id="nt-content-emoji"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('new-topic-modal')">Vazgeç</button>
+      <button class="btn btn-primary" onclick="submitNewTopic()"><i class="fa-solid fa-paper-plane"></i> Gönder</button>
+    </div>
+  </div>
+</div>
+
+<!-- EDIT TOPIC MODAL -->
+<div class="modal-backdrop" id="edit-topic-modal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3>Konuyu Düzenle</h3>
+      <button onclick="closeModal('edit-topic-modal')"><i class="fa-solid fa-times"></i></button>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Başlık</label>
+      <input type="text" class="form-input" id="et-title" maxlength="120" />
+    </div>
+    <div class="form-group">
+      <label class="form-label">Kategori</label>
+      <select class="form-input" id="et-category" style="padding-left:14px"></select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">İçerik</label>
+      <div class="rich-toolbar">
+        <button type="button" onclick="rtCmd('bold')"><i class="fa-solid fa-bold"></i></button>
+        <button type="button" onclick="rtCmd('italic')"><i class="fa-solid fa-italic"></i></button>
+        <button type="button" onclick="rtInsertLink()"><i class="fa-solid fa-link"></i></button>
+      </div>
+      <div class="rich-editor" id="et-content" contenteditable="true"></div>
+    </div>
+    <input type="hidden" id="et-topic-id" />
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('edit-topic-modal')">Vazgeç</button>
+      <button class="btn btn-primary" onclick="submitEditTopic()"><i class="fa-solid fa-save"></i> Kaydet</button>
+    </div>
+  </div>
+</div>
+
+<!-- REPLY EDIT MODAL -->
+<div class="modal-backdrop" id="edit-reply-modal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3>Yorumu Düzenle</h3>
+      <button onclick="closeModal('edit-reply-modal')"><i class="fa-solid fa-times"></i></button>
+    </div>
+    <div class="form-group">
+      <div class="rich-toolbar">
+        <button type="button" onclick="rtCmd('bold')"><i class="fa-solid fa-bold"></i></button>
+        <button type="button" onclick="rtCmd('italic')"><i class="fa-solid fa-italic"></i></button>
+        <button type="button" onclick="rtInsertLink()"><i class="fa-solid fa-link"></i></button>
+        <button type="button" onclick="toggleEmojiPickerRT('er-content')"><i class="fa-regular fa-face-smile"></i></button>
+      </div>
+      <div class="rich-editor" id="er-content" contenteditable="true"></div>
+      <div class="emoji-picker" id="er-content-emoji"></div>
+    </div>
+    <input type="hidden" id="er-reply-id" />
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('edit-reply-modal')">Vazgeç</button>
+      <button class="btn btn-primary" onclick="submitEditReply()"><i class="fa-solid fa-save"></i> Kaydet</button>
+    </div>
+  </div>
+</div>
+
+<!-- REPORT MODAL -->
+<div class="modal-backdrop" id="report-modal">
+  <div class="modal-box" style="max-width:440px">
+    <div class="modal-header">
+      <h3>İçerik Raporla</h3>
+      <button onclick="closeModal('report-modal')"><i class="fa-solid fa-times"></i></button>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Rapor Nedeni</label>
+      <select class="form-input" id="report-reason" style="padding-left:14px">
+        <option value="spam">Spam / Reklam</option>
+        <option value="hakaret">Hakaret / Küfür</option>
+        <option value="yaniltici">Yanıltıcı Bilgi</option>
+        <option value="uygunsuz">Uygunsuz İçerik</option>
+        <option value="diger">Diğer</option>
+      </select>
+    </div>
+    <input type="hidden" id="report-target-id" />
+    <input type="hidden" id="report-target-type" />
+    <input type="hidden" id="report-target-title" />
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('report-modal')">Vazgeç</button>
+      <button class="btn btn-danger" onclick="submitReport()"><i class="fa-solid fa-flag"></i> Raporla</button>
+    </div>
+  </div>
+</div>
+
+<!-- MUTE MODAL -->
+<div class="modal-backdrop" id="mute-modal">
+  <div class="modal-box" style="max-width:400px">
+    <div class="modal-header">
+      <h3>Kullanıcıyı Sustur</h3>
+      <button onclick="closeModal('mute-modal')"><i class="fa-solid fa-times"></i></button>
+    </div>
+    <p style="font-size:.88rem;color:var(--text-secondary);margin-bottom:16px">Susturulan kullanıcı konu açamaz ve yorum yazamaz. Maksimum 3 gün.</p>
+    <div class="form-group">
+      <label class="form-label">Süre (Saat)</label>
+      <input type="number" class="form-input" id="mute-hours" min="1" max="72" value="24" />
+    </div>
+    <input type="hidden" id="mute-target-id" />
+    <input type="hidden" id="mute-target-name" />
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('mute-modal')">Vazgeç</button>
+      <button class="btn btn-danger" onclick="submitMute()"><i class="fa-solid fa-microphone-slash"></i> Sustur</button>
+    </div>
+  </div>
+</div>
+
+<!-- BAN MODAL -->
+<div class="modal-backdrop" id="ban-modal">
+  <div class="modal-box" style="max-width:400px">
+    <div class="modal-header">
+      <h3>Kullanıcıyı Uzaklaştır</h3>
+      <button onclick="closeModal('ban-modal')"><i class="fa-solid fa-times"></i></button>
+    </div>
+    <p style="font-size:.88rem;color:var(--text-secondary);margin-bottom:16px">Uzaklaştırılan kullanıcı hesabını kullanamaz. Maksimum 3 gün.</p>
+    <div class="form-group">
+      <label class="form-label">Süre (Saat)</label>
+      <input type="number" class="form-input" id="ban-hours" min="1" max="72" value="24" />
+    </div>
+    <input type="hidden" id="ban-target-id" />
+    <input type="hidden" id="ban-target-name" />
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('ban-modal')">Vazgeç</button>
+      <button class="btn btn-danger" onclick="submitBan()"><i class="fa-solid fa-ban"></i> Uzaklaştır</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ LOGIN ═══════ -->
+<div class="page" id="page-login">
+  <div class="auth-page">
+    <form class="auth-card page-transition-enter" onsubmit="doLogin();return false;">
+      <div class="auth-logo"><span class="brand">Monarch Gaming</span></div>
+      <h2 class="auth-title">Giriş Yap</h2>
+      <p class="auth-subtitle">Hesabına giriş yap</p>
+      <div class="form-group">
+        <label class="form-label">Kullanıcı Adı veya E-Posta</label>
+        <div class="input-wrapper"><i class="fa-solid fa-user input-icon"></i><input type="text" class="form-input" id="login-user" placeholder="Kullanıcı adı veya e-posta" autocomplete="username" /></div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Şifre</label>
+        <div class="input-wrapper"><i class="fa-solid fa-lock input-icon"></i><input type="password" class="form-input" id="login-pass" placeholder="Şifreniz" autocomplete="current-password" /><span class="input-action" onclick="togglePassword('login-pass',this)"><i class="fa-solid fa-eye"></i></span></div>
+      </div>
+      <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center"><i class="fa-solid fa-right-to-bracket"></i> Giriş Yap</button>
+      <div class="auth-switch">Hesabın yok mu? <a onclick="showPage('register')">Kayıt Ol</a></div>
+    </form>
+  </div>
+</div>
+
+<!-- ═══════ REGISTER ═══════ -->
+<div class="page" id="page-register">
+  <div class="auth-page">
+    <form class="auth-card page-transition-enter" onsubmit="doRegister();return false;">
+      <div class="auth-logo"><span class="brand">Monarch Gaming</span></div>
+      <h2 class="auth-title">Kayıt Ol</h2>
+      <p class="auth-subtitle">Topluluğa katıl</p>
+      <div class="form-group">
+        <label class="form-label">Kullanıcı Adı</label>
+        <div class="input-wrapper"><i class="fa-solid fa-at input-icon"></i><input type="text" class="form-input" id="reg-username" placeholder="kullanici_adi" autocomplete="username" /></div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Ad Soyad</label>
+        <div class="input-wrapper"><i class="fa-solid fa-id-card input-icon"></i><input type="text" class="form-input" id="reg-fullname" placeholder="Ad Soyad" autocomplete="name" /></div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">E-Posta</label>
+        <div class="input-wrapper"><i class="fa-solid fa-envelope input-icon"></i><input type="email" class="form-input" id="reg-email" placeholder="ornek@email.com" autocomplete="email" /></div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Şifre</label>
+        <div class="input-wrapper"><i class="fa-solid fa-lock input-icon"></i><input type="password" class="form-input" id="reg-pass" placeholder="En az 8 karakter" autocomplete="new-password" oninput="checkPasswordStrength(this.value)" /><span class="input-action" onclick="togglePassword('reg-pass',this)"><i class="fa-solid fa-eye"></i></span></div>
+        <div class="password-strength">
+          <div class="strength-bars"><div class="strength-bar" id="sb1"></div><div class="strength-bar" id="sb2"></div><div class="strength-bar" id="sb3"></div><div class="strength-bar" id="sb4"></div></div>
+          <div class="strength-label" id="strength-label">Şifre gücü</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Şifre Tekrar</label>
+        <div class="input-wrapper"><i class="fa-solid fa-lock input-icon"></i><input type="password" class="form-input" id="reg-pass2" placeholder="Şifreyi tekrar girin" autocomplete="new-password" /><span class="input-action" onclick="togglePassword('reg-pass2',this)"><i class="fa-solid fa-eye"></i></span></div>
+      </div>
+      <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center"><i class="fa-solid fa-user-plus"></i> Kayıt Ol</button>
+      <div class="auth-switch">Zaten hesabın var mı? <a onclick="showPage('login')">Giriş Yap</a></div>
+    </form>
+  </div>
+</div>
+
+<!-- ═══════ DASHBOARD ═══════ -->
+<div class="page" id="page-dashboard">
+  <div class="dashboard-layout">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="dash-sidebar">
+      <div class="sidebar-logo">
+        <i class="fa-solid fa-shield-halved"></i> Üye Paneli
+      </div>
+      <div class="sidebar-section-title">Genel</div>
+      <div class="sidebar-item active" id="sb-dashboard" onclick="showDashView('dashboard')">
+        <i class="fa-solid fa-gauge-high"></i> Dashboard
+      </div>
+      <div class="sidebar-item" id="sb-account" onclick="showDashView('account')">
+        <i class="fa-solid fa-user-gear"></i> Hesabım
+      </div>
+      <div class="sidebar-item" id="sb-stats" onclick="showDashView('stats')">
+        <i class="fa-solid fa-chart-bar"></i> İstatistiklerim
+      </div>
+      <div class="sidebar-item" id="sb-messages" onclick="showDashView('messages')">
+        <i class="fa-solid fa-comments"></i> Mesajlaşma
+        <span class="sidebar-badge" id="msg-badge" style="display:none">!</span>
+      </div>
+      <div class="sidebar-section-title">Hesap</div>
+      <div class="sidebar-item" id="sb-progress" onclick="showDashView('progress')">
+        <i class="fa-solid fa-chart-line"></i> İlerleme Seviyesi
+      </div>
+      <div class="sidebar-item" id="sb-membership" onclick="showDashView('membership')">
+        <i class="fa-solid fa-crown"></i> Üyelik
+      </div>
+      <div class="sidebar-item" id="sb-support" onclick="showDashView('support')">
+        <i class="fa-solid fa-headset"></i> Destek
+      </div>
+      <div class="sidebar-item logout-item" onclick="askLogout()">
+        <i class="fa-solid fa-right-from-bracket"></i> Çıkış Yap
+      </div>
+    </aside>
+
+    <!-- Dash Content -->
+    <div class="dash-content">
+
+      <!-- ════ DASHBOARD VIEW ════ -->
+      <div class="dash-view active" id="view-dashboard">
+        <div class="dash-header">
+          <h1 class="dash-title">Merhaba, <span class="gradient-text" id="dash-username-title">Üye</span></h1>
+          <p class="dash-subtitle" id="dash-last-login">Son giriş: Az önce</p>
+        </div>
+
+        <!-- User Identity Card -->
+        <div class="user-profile-card">
+          <div class="upc-avatar-wrap">
+            <div class="upc-avatar" id="upc-avatar"><i class="fa-solid fa-user"></i></div>
+            <div class="upc-online-dot"></div>
+            <div class="upc-avatar-badge" id="upc-badge"></div>
+          </div>
+          <div class="upc-info">
+            <div class="upc-name" id="upc-username">—</div>
+            <div class="upc-email" id="upc-email"><i class="fa-solid fa-envelope"></i> —</div>
+            <div class="upc-membership" id="upc-membership"><i class="fa-solid fa-id-card"></i> Standart Üye</div>
+          </div>
+          <div class="upc-stats">
+            <div class="upc-stat">
+              <span class="upc-stat-val" id="upc-topics">0</span>
+              <span class="upc-stat-label">Konu</span>
+            </div>
+            <div class="upc-stat-divider"></div>
+            <div class="upc-stat">
+              <span class="upc-stat-val" id="upc-replies">0</span>
+              <span class="upc-stat-label">Yorum</span>
+            </div>
+            <div class="upc-stat-divider"></div>
+            <div class="upc-stat">
+              <span class="upc-stat-val" id="upc-messages">0</span>
+              <span class="upc-stat-label">Mesaj</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 6-Stat Cards -->
+        <div class="dash-stats-row">
+          <div class="dash-stat-card">
+            <div class="dash-stat-icon"><i class="fa-solid fa-at"></i></div>
+            <div class="dash-stat-label">Kullanıcı Adı</div>
+            <div class="dash-stat-value gradient-text" id="ds-username">—</div>
+          </div>
+          <div class="dash-stat-card">
+            <div class="dash-stat-icon"><i class="fa-solid fa-envelope"></i></div>
+            <div class="dash-stat-label">E-Posta</div>
+            <div class="dash-stat-value" id="ds-email" style="font-size:.82rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">—</div>
+          </div>
+          <div class="dash-stat-card">
+            <div class="dash-stat-icon"><i class="fa-solid fa-crown"></i></div>
+            <div class="dash-stat-label">Üyelik Tipi</div>
+            <div class="dash-stat-value" id="ds-membership" style="font-size:.95rem">Standart</div>
+          </div>
+          <div class="dash-stat-card">
+            <div class="dash-stat-icon"><i class="fa-solid fa-pen-to-square"></i></div>
+            <div class="dash-stat-label">Toplam Konu</div>
+            <div class="dash-stat-value gradient-text" id="ds-topics">0</div>
+          </div>
+          <div class="dash-stat-card">
+            <div class="dash-stat-icon"><i class="fa-solid fa-comment"></i></div>
+            <div class="dash-stat-label">Toplam Yorum</div>
+            <div class="dash-stat-value gradient-text" id="ds-replies">0</div>
+          </div>
+          <div class="dash-stat-card">
+            <div class="dash-stat-icon"><i class="fa-solid fa-message"></i></div>
+            <div class="dash-stat-label">Toplam Mesaj</div>
+            <div class="dash-stat-value gradient-text" id="ds-messages">0</div>
+          </div>
+        </div>
+
+        <!-- Son İşlemler -->
+        <div class="card">
+          <div class="card-section-header">
+            <i class="fa-solid fa-clock-rotate-left"></i> Son İşlemler
+          </div>
+          <div class="activity-list" id="activity-list">
+            <div class="activity-empty">
+              <i class="fa-solid fa-inbox"></i>
+              <span>Henüz işlem yok</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Action Buttons -->
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:20px">
+          <button class="btn btn-ghost" onclick="showDashView('account')" style="flex-direction:column;height:80px;gap:6px;border-radius:var(--radius-lg)">
+            <i class="fa-solid fa-user-gear" style="font-size:1.2rem;color:var(--accent)"></i>
+            <span style="font-size:.8rem">Hesabım</span>
+          </button>
+          <button class="btn btn-ghost" onclick="showDashView('messages')" style="flex-direction:column;height:80px;gap:6px;border-radius:var(--radius-lg)">
+            <i class="fa-solid fa-comments" style="font-size:1.2rem;color:#3b82f6"></i>
+            <span style="font-size:.8rem">Mesajlaşma</span>
+          </button>
+          <button class="btn btn-ghost" onclick="showPage('forum')" style="flex-direction:column;height:80px;gap:6px;border-radius:var(--radius-lg)">
+            <i class="fa-solid fa-comments-dollar" style="font-size:1.2rem;color:var(--text-muted)"></i>
+            <span style="font-size:.8rem">Forum</span>
+          </button>
+        </div>
+      </div><!-- /view-dashboard -->
+
+      <!-- ════ HESABIM VIEW ════ -->
+      <div class="dash-view" id="view-account">
+
+        <!-- Header -->
+        <div class="dash-header">
+          <h1 class="dash-title">Hesabım</h1>
+          <p class="dash-subtitle">Profil bilgilerini, güvenlik ve görünüm ayarlarını yönet</p>
+        </div>
+
+        <!-- MEGA PRO: Avatar + Quick Info Card -->
+        <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:20px;padding:32px;margin-bottom:22px;display:flex;align-items:center;gap:28px;position:relative;overflow:hidden">
+          <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.3),transparent)"></div>
+          <div style="position:absolute;top:-40px;right:-40px;width:160px;height:160px;background:radial-gradient(circle,rgba(255,255,255,.04),transparent 70%);pointer-events:none"></div>
+          <div class="avatar-preview" id="acc-avatar-preview" style="width:88px;height:88px;border-radius:50%;font-size:2rem;box-shadow:0 0 0 3px var(--bg-card),0 0 0 5px rgba(255,255,255,.15),0 8px 28px rgba(0,0,0,.4);flex-shrink:0;cursor:pointer" onclick="document.getElementById('avatar-file-input').click()">
+            <span id="acc-avatar-initial">?</span>
+          </div>
+          <div style="flex:1;min-width:0">
+            <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--text-muted);margin-bottom:4px">Profil Fotoğrafı</div>
+            <div style="font-size:1rem;font-weight:700;margin-bottom:12px;color:var(--text-primary)">Avatarını Güncelle</div>
+            <div style="display:flex;gap:10px;flex-wrap:wrap">
+              <label class="btn btn-ghost btn-sm" for="avatar-file-input" style="cursor:pointer">
+                <i class="fa-solid fa-upload"></i> Dosyadan Yükle
+              </label>
+              <input type="file" id="avatar-file-input" accept=".jpg,.jpeg,.png,image/jpeg,image/png" style="display:none" onchange="previewAvatar(this)" />
+              <button class="btn btn-ghost btn-sm" onclick="openLevelAvatarPicker()">
+                <i class="fa-solid fa-images"></i> Seviye Avatarları
+              </button>
+            </div>
+            <p style="font-size:.76rem;color:var(--text-muted);margin-top:10px;display:flex;align-items:center;gap:6px"><i class="fa-solid fa-circle-info" style="color:var(--info)"></i> JPG / PNG — Maksimum 250KB</p>
+          </div>
+        </div>
+
+        <!-- 3-col: Kullanıcı Adı | Ad Soyad | Doğum Tarihi -->
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;margin-bottom:18px">
+
+          <!-- Kullanıcı Adı -->
+          <div class="settings-section" id="username-change-section" style="margin-bottom:0">
+            <div class="settings-section-header">
+              <i class="fa-solid fa-at"></i> Kullanıcı Adı
+            </div>
+            <div class="settings-body">
+              <div class="input-wrapper" style="margin-bottom:10px">
+                <i class="fa-solid fa-at input-icon"></i>
+                <input type="text" class="form-input" id="acc-username-show" readonly style="font-family:var(--font-mono)" />
+              </div>
+              <p style="font-size:.76rem;color:var(--text-muted);display:flex;align-items:center;gap:6px">
+                <i class="fa-solid fa-clock" style="color:var(--warning)"></i> <span id="username-change-info">Yükleniyor...</span>
+              </p>
+            </div>
+          </div>
+
+          <!-- Ad Soyad -->
+          <div class="settings-section" style="margin-bottom:0">
+            <div class="settings-section-header">
+              <i class="fa-solid fa-id-card"></i> Ad Soyad
+            </div>
+            <div class="settings-body">
+              <form onsubmit="saveFullname();return false;">
+                <div class="form-group" style="margin-bottom:14px">
+                  <div class="input-wrapper">
+                    <i class="fa-solid fa-user input-icon"></i>
+                    <input type="text" class="form-input" id="acc-fullname-input" placeholder="Adınız ve soyadınız" maxlength="60" />
+                  </div>
+                  <p style="font-size:.76rem;color:var(--text-muted);margin-top:8px;display:flex;align-items:center;gap:6px">
+                    <i class="fa-solid fa-eye-slash"></i> Profilinde gizli görünür
+                  </p>
+                </div>
+                <button type="submit" class="btn btn-primary btn-sm">
+                  <i class="fa-solid fa-floppy-disk"></i> Kaydet
+                </button>
+              </form>
+            </div>
+          </div>
+
+          <!-- Doğum Tarihi -->
+          <div class="settings-section" style="margin-bottom:0">
+            <div class="settings-section-header">
+              <i class="fa-solid fa-cake-candles"></i> Doğum Tarihi
+            </div>
+            <div class="settings-body">
+              <form onsubmit="saveBirthDate();return false;">
+                <div class="form-group" style="margin-bottom:14px">
+                  <div class="input-wrapper">
+                    <i class="fa-solid fa-calendar input-icon"></i>
+                    <input type="date" class="form-input" id="acc-birthdate-input" />
+                  </div>
+                  <p style="font-size:.76rem;color:var(--text-muted);margin-top:8px;display:flex;align-items:center;gap:6px">
+                    <i class="fa-solid fa-lock"></i> Yalnızca profil sayfanda görünür
+                  </p>
+                </div>
+                <button type="submit" class="btn btn-primary btn-sm">
+                  <i class="fa-solid fa-floppy-disk"></i> Kaydet
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        <!-- Şifre Değiştir — Full width -->
+        <div class="settings-section" style="margin-bottom:18px">
+          <div class="settings-section-header">
+            <i class="fa-solid fa-key"></i> Şifre Değiştir
+            <span style="margin-left:auto;font-size:.65rem;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.2);color:var(--danger);padding:2px 8px;border-radius:99px;text-transform:none;font-weight:600;letter-spacing:0;display:flex;align-items:center;gap:5px"><i class="fa-solid fa-shield-halved"></i> Güvenlik</span>
+          </div>
+          <div class="settings-body">
+            <form onsubmit="changePassword();return false;">
+              <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:20px">
+                <div class="form-group" style="margin-bottom:0">
+                  <label class="form-label">Mevcut Şifre</label>
+                  <div class="input-wrapper">
+                    <i class="fa-solid fa-lock input-icon"></i>
+                    <input type="password" autocomplete="current-password" class="form-input" id="old-pass" placeholder="Mevcut şifre" />
+                    <span class="input-action" onclick="togglePassword('old-pass',this)"><i class="fa-solid fa-eye"></i></span>
+                  </div>
+                </div>
+                <div class="form-group" style="margin-bottom:0">
+                  <label class="form-label">Yeni Şifre</label>
+                  <div class="input-wrapper">
+                    <i class="fa-solid fa-lock input-icon"></i>
+                    <input type="password" autocomplete="new-password" class="form-input" id="new-pass" placeholder="En az 8 karakter" />
+                    <span class="input-action" onclick="togglePassword('new-pass',this)"><i class="fa-solid fa-eye"></i></span>
+                  </div>
+                </div>
+                <div class="form-group" style="margin-bottom:0">
+                  <label class="form-label">Şifre Tekrar</label>
+                  <div class="input-wrapper">
+                    <i class="fa-solid fa-lock input-icon"></i>
+                    <input type="password" autocomplete="new-password" class="form-input" id="new-pass2" placeholder="Tekrar girin" />
+                  </div>
+                </div>
+              </div>
+              <button type="submit" class="btn btn-primary">
+                <i class="fa-solid fa-shield-halved"></i> Şifreyi Güncelle
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <!-- Kullanıcı Adı Rengi — Premium — Full width -->
+        <div class="settings-section" style="margin-bottom:0">
+          <div class="settings-section-header">
+            <i class="fa-solid fa-palette"></i> Kullanıcı Adı Rengi
+            <span class="premium-badge-tag"><i class="fa-solid fa-crown"></i> Premium Özellik</span>
+          </div>
+          <div class="settings-body">
+            <p class="settings-hint" style="margin-bottom:16px">
+              <i class="fa-solid fa-info-circle"></i>
+              Animasyonlu gradyan renk uygula. Forum'da ve panelde kullanıcı adın renkli görünür. Yalnızca Premium üyelere özeldir.
+            </p>
+            <div style="display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap">
+              <!-- Grid + butonlar -->
+              <div style="flex:1;min-width:260px">
+                <div id="settings-ppg-grid" class="settings-ppg-grid"></div>
+                <div class="gradient-action-row" id="settings-ppg-actions" style="margin-top:14px">
+                  <button class="btn btn-primary btn-sm" onclick="saveSettingsGradient()">
+                    <i class="fa-solid fa-check"></i> Uygula
+                  </button>
+                  <button class="btn btn-ghost btn-sm" onclick="clearSettingsGradient()">
+                    <i class="fa-solid fa-ban"></i> Kaldır
+                  </button>
+                </div>
+              </div>
+              <!-- Canlı önizleme -->
+              <div class="gradient-preview-box" style="flex-direction:column;align-items:center;min-width:160px;max-width:200px;text-align:center">
+                <span class="gradient-preview-label" style="margin-bottom:8px">Canlı Önizleme</span>
+                <div id="premium-username-preview" class="gradient-preview-name" style="font-size:1.2rem">KullaniciAdi</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /view-account -->
+
+      <!-- ════ İSTATİSTİKLERİM VIEW ════ -->
+      <div class="dash-view" id="view-stats">
+        <div class="dash-header">
+          <h1 class="dash-title">İstatistiklerim</h1>
+          <p class="dash-subtitle">Topluluk katkılarının ve aktivite verilerin</p>
+        </div>
+
+        <div class="stats-page-grid">
+          <div class="stats-page-card">
+            <div class="stats-page-icon"><i class="fa-solid fa-comments"></i></div>
+            <span class="stats-page-val" id="st-messages">0</span>
+            <div class="stats-page-label">Toplam Mesaj</div>
+          </div>
+          <div class="stats-page-card">
+            <div class="stats-page-icon"><i class="fa-solid fa-pen-to-square"></i></div>
+            <span class="stats-page-val" id="st-topics">0</span>
+            <div class="stats-page-label">Açılan Konu</div>
+          </div>
+          <div class="stats-page-card">
+            <div class="stats-page-icon"><i class="fa-solid fa-reply"></i></div>
+            <span class="stats-page-val" id="st-replies">0</span>
+            <div class="stats-page-label">Yanıt Verme</div>
+          </div>
+          <div class="stats-page-card">
+            <div class="stats-page-icon"><i class="fa-solid fa-sun"></i></div>
+            <span class="stats-page-val" id="st-daily">0 dk</span>
+            <div class="stats-page-label">Günlük Aktiflik</div>
+          </div>
+          <div class="stats-page-card">
+            <div class="stats-page-icon"><i class="fa-solid fa-calendar-week"></i></div>
+            <span class="stats-page-val" id="st-weekly">0 dk</span>
+            <div class="stats-page-label">Haftalık Aktiflik</div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-bottom:16px">
+          <div class="card-section-header">
+            <i class="fa-solid fa-chart-column"></i> Haftalık Giriş Aktivitesi
+          </div>
+          <div class="mini-chart" id="stats-chart" style="height:110px"></div>
+          <div style="display:flex;justify-content:space-between;font-size:.68rem;color:var(--text-muted);margin-top:8px;padding:0 4px">
+            <span>Pzt</span><span>Sal</span><span>Çar</span><span>Per</span><span>Cum</span><span>Cmt</span><span>Paz</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-section-header">
+            <i class="fa-solid fa-circle-info"></i> Bilgi
+          </div>
+          <p style="font-size:.85rem;color:var(--text-muted);line-height:1.6">
+            İstatistikler aktif kullanım verilere dayanır. Forum'da konu aç, yorum yap ve mesajlaş — sayıların yükselsin!
+          </p>
+        </div>
+      </div><!-- /view-stats -->
+
+      <!-- ════ MESAJLAŞMA VIEW ════ -->
+      <div class="dash-view" id="view-messages">
+        <div class="dash-header" style="margin-bottom:16px">
+          <h1 class="dash-title">Mesajlaşma</h1>
+          <p class="dash-subtitle">Arkadaşlarınla özel mesajlaş — gruplar oluştur</p>
+        </div>
+        <div class="msg-layout">
+          <!-- Sidebar -->
+          <div class="msg-sidebar">
+            <div class="msg-sidebar-actions">
+              <button class="msg-action-btn active" id="msg-tab-friends" onclick="switchMsgTab('friends')">
+                <i class="fa-solid fa-user-group"></i> Arkadaşlar
+              </button>
+            </div>
+            <div id="msg-friend-actions">
+              <div class="msg-add-friend">
+                <input type="text" class="msg-add-input" id="add-friend-input" placeholder="Kullanıcı adı ekle..." />
+                <button class="msg-add-btn" onclick="sendFriendRequest()" title="Arkadaş Ekle">
+                  <i class="fa-solid fa-user-plus"></i>
+                </button>
+              </div>
+            </div>
+
+            <div id="msg-friends-panel">
+              <div class="msg-friends-list" id="friends-list">
+                <div style="text-align:center;padding:28px 12px;color:var(--text-muted)">
+                  <i class="fa-solid fa-user-group" style="font-size:2rem;margin-bottom:10px;display:block;opacity:.2"></i>
+                  <span style="font-size:.82rem">Henüz arkadaşın yok</span>
+                </div>
+              </div>
+              <div class="msg-requests" id="friend-requests-panel" style="display:none">
+                <div class="msg-req-title">Gelen İstekler</div>
+                <div id="friend-requests-list"></div>
+              </div>
+            </div>
+
+          </div>
+          <!-- Chat -->
+          <div class="msg-chat" id="msg-chat-area">
+            <div class="msg-empty">
+              <i class="fa-solid fa-comment-dots"></i>
+              <p>Mesajlaşmak için soldaki<br>listeden bir arkadaşını seç</p>
+            </div>
+          </div>
+        </div>
+      </div><!-- /view-messages -->
+
+
+
+      <!-- ════ İLERLEME SEVİYESİ VIEW ════ -->
+      <div class="dash-view" id="view-progress">
+        <div class="dash-header">
+          <h1 class="dash-title">İlerleme Seviyesi</h1>
+          <p class="dash-subtitle">Forum'da aktif ol, konu aç, yorum yap — seviye kazan</p>
+        </div>
+
+        <!-- Current Level Hero Card -->
+        <div class="progress-level-card" id="progress-current-card">
+          <div class="progress-level-badge" id="progress-badge-icon">
+            <i class="fa-solid fa-seedling"></i>
+          </div>
+          <div class="progress-level-info">
+            <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--text-muted);margin-bottom:4px">Mevcut Seviye</div>
+            <div class="progress-level-name" id="progress-level-name">Yeni Üye</div>
+            <div class="progress-level-sub" id="progress-level-sub">Hoş geldin! Forum'da aktif ol ve yüksel.</div>
+            <div class="progress-bar-wrap">
+              <div class="progress-bar-fill" id="progress-bar-fill" style="width:0%"></div>
+            </div>
+            <div class="progress-bar-label" id="progress-bar-label">Sonraki seviye için konu aç veya yorum yap</div>
+          </div>
+          <!-- Stats mini row -->
+          <div style="display:flex;flex-direction:column;gap:12px;flex-shrink:0;padding:0 4px">
+            <div style="text-align:center;padding:14px 20px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;min-width:90px">
+              <div style="font-size:1.4rem;font-weight:800;color:var(--text-primary)" id="prog-topics-count">—</div>
+              <div style="font-size:.68rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.08em;margin-top:2px">Konu</div>
+            </div>
+            <div style="text-align:center;padding:14px 20px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px">
+              <div style="font-size:1.4rem;font-weight:800;color:var(--text-primary)" id="prog-replies-count">—</div>
+              <div style="font-size:.68rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.08em;margin-top:2px">Yorum</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- All Tiers -->
+        <div>
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+            <div style="width:3px;height:18px;background:rgba(255,255,255,.3);border-radius:2px"></div>
+            <span style="font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--text-muted)">Tüm Seviyeler</span>
+          </div>
+          <div class="progress-tiers-grid" id="progress-tiers-grid"></div>
+        </div>
+      </div><!-- /view-progress -->
+
+      <!-- ════ ÜYELİK VIEW ════ -->
+      <div class="dash-view" id="view-membership">
+        <div class="dash-header">
+          <h1 class="dash-title">Üyelik</h1>
+          <p class="dash-subtitle">Mevcut üyelik durumun ve Premium ayrıcalıklar</p>
+        </div>
+
+        <!-- Current Plan Status (dynamic) -->
+        <div class="membership-card" id="membership-status-card">
+          <!-- loadMembershipView() fills this -->
+        </div>
+
+        <!-- Premium Package -->
+        <div style="background:var(--bg-card);border:1px solid rgba(245,197,24,.25);border-radius:20px;overflow:hidden;position:relative">
+          <!-- Shimmer top line -->
+          <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(245,197,24,.4),transparent)"></div>
+          <!-- Subtle bg -->
+          <div style="position:absolute;top:-60px;right:-60px;width:220px;height:220px;background:radial-gradient(circle,rgba(255,255,255,.03),transparent 70%);pointer-events:none"></div>
+
+          <!-- Header section -->
+          <div style="padding:28px 28px 22px;display:flex;align-items:center;gap:18px;flex-wrap:wrap;position:relative">
+            <div style="width:52px;height:52px;border-radius:14px;background:rgba(245,197,24,.15);border:1px solid rgba(245,197,24,.25);display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0">
+              <i class="fa-solid fa-crown" style="color:#f5c518;-webkit-text-fill-color:#f5c518"></i>
+            </div>
+            <div style="flex:1;min-width:0">
+              <div style="font-size:1.2rem;font-weight:800;letter-spacing:-.02em;margin-bottom:3px">Premium Üyelik</div>
+              <div style="font-size:.8rem;color:var(--text-muted)">Monarch Gaming'in en özel ayrıcalıklarına sahip ol</div>
+            </div>
+            <div style="display:inline-flex;align-items:baseline;gap:3px;padding:8px 18px;border-radius:99px;background:linear-gradient(135deg,rgba(236,72,153,.15),rgba(139,92,246,.15));border:1px solid rgba(236,72,153,.25)">
+              <span style="font-size:1.3rem;font-weight:900;color:var(--text-primary)">149,90</span>
+              <span style="font-size:.85rem;font-weight:600;color:var(--text-muted)">₺/ay</span>
+            </div>
+          </div>
+
+          <div style="height:1px;background:rgba(245,197,24,.15);margin:0 28px"></div>
+
+          <!-- Features grid -->
+          <div style="padding:22px 28px">
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin-bottom:24px">
+              <div style="display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:11px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07)">
+                <i class="fa-solid fa-award" style="color:var(--text-muted);font-size:.85rem;flex-shrink:0;width:14px"></i>
+                <span style="font-size:.82rem;font-weight:500">Özel Premium rozeti</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:11px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07)">
+                <i class="fa-solid fa-wand-magic-sparkles" style="color:#a78bfa;font-size:.85rem;flex-shrink:0;width:14px"></i>
+                <span style="font-size:.82rem;font-weight:500">Animasyonlu gradyan isim</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:11px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07)">
+                <i class="fa-solid fa-server" style="color:#38bdf8;font-size:.85rem;flex-shrink:0;width:14px"></i>
+                <span style="font-size:.82rem;font-weight:500">Sunucu önceliği</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:11px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07)">
+                <i class="fa-solid fa-headphones" style="color:#f59e0b;font-size:.85rem;flex-shrink:0;width:14px"></i>
+                <span style="font-size:.82rem;font-weight:500">TS3 VIP kanal erişimi</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:11px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07)">
+                <i class="fa-solid fa-headset" style="color:var(--text-muted);font-size:.85rem;flex-shrink:0;width:14px"></i>
+                <span style="font-size:.82rem;font-weight:500">7/24 öncelikli destek</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:11px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07)">
+                <i class="fa-solid fa-users" style="color:#a78bfa;font-size:.85rem;flex-shrink:0;width:14px"></i>
+                <span style="font-size:.82rem;font-weight:500">10 kişilik grup kurma</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:11px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07)">
+                <i class="fa-solid fa-image" style="color:#38bdf8;font-size:.85rem;flex-shrink:0;width:14px"></i>
+                <span style="font-size:.82rem;font-weight:500">Özel profil çerçevesi</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:11px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07)">
+                <i class="fa-solid fa-bolt" style="color:#f59e0b;font-size:.85rem;flex-shrink:0;width:14px"></i>
+                <span style="font-size:.82rem;font-weight:500">Erken etkinlik erişimi</span>
+              </div>
+            </div>
+
+            <!-- Info note -->
+            <p style="text-align:center;font-size:.78rem;color:var(--text-muted);margin-top:4px;display:flex;align-items:center;justify-content:center;gap:6px">
+              <i class="fa-solid fa-headset" style="font-size:.75rem"></i> Premium satın almak için TeamSpeak 3 sunucumuzla iletişime geçin
+            </p>
+          </div>
+        </div>
+      </div><!-- /view-membership -->
+
+      <!-- ════ DESTEK VIEW ════ -->
+      <div class="dash-view" id="view-support">
+
+        <div class="dash-header">
+          <h1 class="dash-title">Destek</h1>
+          <p class="dash-subtitle">Sorununu ilet, ekibimiz en kısa sürede yardımcı olur</p>
+        </div>
+
+        <!-- Stats row (compact) -->
+        <div style="display:flex;gap:12px;margin-bottom:24px;flex-wrap:wrap">
+          <div style="display:flex;align-items:center;gap:10px;padding:12px 18px;background:var(--bg-card);border:1px solid var(--border);border-radius:12px;flex:1;min-width:110px">
+            <i class="fa-solid fa-paper-plane" style="color:var(--text-muted);font-size:.9rem"></i>
+            <div>
+              <div style="font-size:1.2rem;font-weight:800;color:var(--text-primary)" id="stat-total-tickets">0</div>
+              <div style="font-size:.68rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.07em">Toplam</div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;padding:12px 18px;background:var(--bg-card);border:1px solid var(--border);border-radius:12px;flex:1;min-width:110px">
+            <i class="fa-solid fa-clock" style="color:#f59e0b;font-size:.9rem"></i>
+            <div>
+              <div style="font-size:1.2rem;font-weight:800;color:var(--text-primary)" id="stat-open-tickets">0</div>
+              <div style="font-size:.68rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.07em">Bekleyen</div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;padding:12px 18px;background:var(--bg-card);border:1px solid var(--border);border-radius:12px;flex:1;min-width:110px">
+            <i class="fa-solid fa-lock" style="color:#aaaaaa;font-size:.9rem"></i>
+            <div>
+              <div style="font-size:1.2rem;font-weight:800;color:var(--text-primary)" id="stat-closed-tickets">0</div>
+              <div style="font-size:.68rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.07em">Kapatıldı</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Main Layout -->
+        <div class="support-layout">
+
+          <!-- LEFT: Form -->
+          <div>
+            <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:18px;padding:24px">
+              <div style="font-size:.95rem;font-weight:700;color:var(--text-primary);margin-bottom:18px;display:flex;align-items:center;gap:8px">
+                <i class="fa-solid fa-plus-circle" style="color:var(--text-muted);font-size:.9rem"></i> Yeni Talep
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Konu</label>
+                <div class="input-wrapper">
+                  <i class="fa-solid fa-pen input-icon"></i>
+                  <input type="text" class="form-input" id="support-subject" placeholder="Kısaca belirtin..." />
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Kategori</label>
+                <div class="input-wrapper">
+                  <i class="fa-solid fa-layer-group input-icon"></i>
+                  <select class="form-input" id="support-category" style="padding-left:40px">
+                    <option value="">Seçin...</option>
+                    <option value="genel">Genel</option>
+                    <option value="teknik">Teknik Sorun</option>
+                    <option value="hesap">Hesap Sorunu</option>
+                    <option value="ban">Ban İtiraz</option>
+                    <option value="premium">Premium Üyelik</option>
+                    <option value="diger">Diğer</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group" style="margin-bottom:20px">
+                <label class="form-label">Açıklama</label>
+                <textarea class="form-input" id="support-desc" rows="5" placeholder="Sorununuzu açıklayın..." style="resize:vertical;min-height:120px;line-height:1.6"></textarea>
+              </div>
+
+              <button class="btn btn-primary" style="width:100%;justify-content:center" onclick="createSupportTicket()">
+                <i class="fa-solid fa-paper-plane"></i> Gönder
+              </button>
+            </div>
+          </div>
+
+          <!-- RIGHT: Ticket List -->
+          <div>
+            <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:18px;overflow:hidden">
+              <div style="padding:18px 22px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)">
+                <span style="font-size:.95rem;font-weight:700;color:var(--text-primary)">Taleplerim</span>
+                <button class="btn btn-ghost btn-sm" onclick="renderTickets()" title="Yenile">
+                  <i class="fa-solid fa-rotate-right"></i>
+                </button>
+              </div>
+              <div id="support-tickets-list" style="min-height:240px;max-height:480px;overflow-y:auto">
+                <div class="empty-pro" style="padding:48px 24px">
+                  <div class="empty-pro-icon"><i class="fa-solid fa-ticket-simple"></i></div>
+                  <div class="empty-pro-title">Henüz Talebiniz Yok</div>
+                  <p class="empty-pro-desc">Soldaki formdan yeni bir talep oluşturabilirsiniz.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div><!-- /support-layout -->
+
+      </div><!-- /view-support -->
+
+    </div><!-- /dash-content -->
+  </div><!-- /dashboard-layout -->
+</div><!-- /page-dashboard -->
+
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div style="font-size:1.3rem;font-weight:800;letter-spacing:-.02em;background:linear-gradient(135deg,var(--accent),var(--accent-bright));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:12px;display:flex;align-items:center;gap:8px"><img src="images/monarch-logo.png" style="height:28px;object-fit:contain" alt="" />Monarch Gaming</div>
+        <p class="footer-desc">CS 1.6 JailBreak topluluğu. Güçlü topluluk, adil yönetim ve kaliteli oyun deneyimi.</p>
+        <div class="footer-socials">
+          <a href="#" class="social-icon" title="Discord"><i class="fa-brands fa-discord"></i></a>
+          <a href="#" class="social-icon" title="Steam"><i class="fa-brands fa-steam"></i></a>
+          <a href="#" class="social-icon" title="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
+        </div>
+      </div>
+      <div>
+        <div class="footer-col-title">Sayfalar</div>
+        <div class="footer-links">
+          <span class="footer-link" onclick="showPage('home')">Ana Sayfa</span>
+          <span class="footer-link" onclick="showPage('about')">Hakkımızda</span>
+          <span class="footer-link" onclick="showPage('rules')">Kurallar</span>
+          <span class="footer-link" onclick="showPage('announcements')">Duyurular</span>
+        </div>
+      </div>
+      <div>
+        <div class="footer-col-title">Diğer</div>
+        <div class="footer-links">
+          <span class="footer-link" onclick="showPage('market')">Market</span>
+          <span class="footer-link" onclick="showPage('gallery')">Galeri</span>
+          <span class="footer-link" onclick="showPage('contact')">İletişim</span>
+        </div>
+      </div>
+      <div>
+        <div class="footer-col-title">İletişim</div>
+        <div class="footer-links">
+          <span class="footer-link">TS3: MHJB</span>
+          <span class="footer-link">CS: 95.173.173.117</span>
+          <span class="footer-link">Tel: 0535 963 21 65</span>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2027 Monarch Gaming. Tüm hakları saklıdır.</span>
+      <span>v1.0.3 Sürümü (Beta) — CS 1.6 JailBreak Community</span>
+    </div>
+  </div>
+</footer>
+
+<script src="js/app.js"></script>
+<script src="js/forum.js"></script>
+</body>
+</html>
