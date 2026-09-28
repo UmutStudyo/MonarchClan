@@ -1,7 +1,7 @@
 const SUPABASE_URL = 'https://wfwecnkiomrsximczmdj.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_2HBFBa5RxyxqnV2Kn7v3sQ_e7G0mM2Q';
 
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 /* ================================================================
    MONARCH GAMING — Main Application JavaScript
    CS 1.6 JailBreak Community
